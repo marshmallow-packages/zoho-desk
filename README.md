@@ -28,6 +28,7 @@ ZOHO_DEPARTMENT_ID=
 You need to run a migration so we can create a database table where we can store the access tokens for the connection to Zoho Desk.
 ```bash
 php artisan migrate
+
 ```
 
 ### Auth
