@@ -4,6 +4,7 @@ namespace Marshmallow\ZohoDesk\Resources;
 
 use Carbon\Carbon;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
+use Marshmallow\ZohoDesk\Models\ZohoTicket as ZohoTicketModel;
 use Marshmallow\ZohoDesk\Models\ZohoContact;
 use Marshmallow\ZohoDesk\Models\ZohoProduct;
 
@@ -18,13 +19,13 @@ class ZohoTicket
         return ZohoDesk::get('/tickets');
     }
 
-    public function create(ZohoContact $contact, Carbon $due_date, ZohoProduct $product = null, array $data): ZohoTicket
+    public function create(ZohoContact $contact, Carbon $due_date, ZohoProduct $product = null, array $data): ZohoTicketModel
     {
         $ticket = ZohoDesk::post('/tickets', array_merge([
             'departmentId' => config('zohodesk.department_id'),
             'contactId' => $contact->id,
             'email' => $contact->email,
-            'phone' => $contact->phonenumber,
+            'phone' => $contact->phone,
             'dueDate' => ZohoDesk::dateFormat($due_date),
             'channel' => config('zohodesk.default_channel'),
             'classification' => config('zohodesk.default_classification'),
@@ -32,6 +33,6 @@ class ZohoTicket
             'productId' => ($product) ? $product->id : null,
         ], $data));
 
-        return ZohoTicket::make($ticket);
+        return ZohoTicketModel::make($ticket);
     }
 }
