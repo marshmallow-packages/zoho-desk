@@ -1,0 +1,43 @@
+{
+    "name": "marshmallow/zoho-desk",
+    "description": "This packages provides you with the ability to easily connect your Laravel application to ZohoDesk.",
+    "keywords": ["marshmallow", "Laravel", "Zoho", "ZohoDesk", "Zoho Desk"],
+    "homepage": "https://github.com/Marshmallow-Development/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stef",
+            "email": "stef@marshmallow.dev",
+            "homepage": "https://marshmallow.dev",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "stef@marshmallow.dev"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Marshmallow\\ZohoDesk\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Marshmallow\\ZohoDesk\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Marshmallow\\ZohoDesk\\ZohoDeskServiceProvider"
+            ],
+            "aliases": {
+                "ZohoDesk": "Marshmallow\\ZohoDesk\\Facades\\ZohoDesk"
+            }
+        }
+    }
+}
