@@ -11,6 +11,12 @@ return [
 
     'desk_host' => env('ZOHO_DESK_HOST', 'https://desk.zoho.eu/api/v1'),
 
+    'default_channel' => 'Web',
+
+    'default_classification' => 'Request',
+
+    'default_language' => 'Dutch',
+
     'scopes' => [
         'Desk.articles.READ',
         'Desk.articles.CREATE',

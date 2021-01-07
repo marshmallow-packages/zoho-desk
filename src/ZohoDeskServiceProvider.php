@@ -4,8 +4,8 @@ namespace Marshmallow\ZohoDesk;
 
 use Illuminate\Support\ServiceProvider;
 use Marshmallow\ZohoDesk\Commands\ZohoDeskAuth;
-use Marshmallow\ZohoDesk\Commands\ZohoDeskOrder;
 use Marshmallow\ZohoDesk\Commands\ZohoDeskListDepartments;
+use Marshmallow\ZohoDesk\Commands\ZohoDeskOrder;
 
 class ZohoDeskServiceProvider extends ServiceProvider
 {
