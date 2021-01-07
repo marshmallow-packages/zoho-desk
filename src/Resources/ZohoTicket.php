@@ -18,7 +18,7 @@ class ZohoTicket
         return ZohoDesk::get('/tickets');
     }
 
-    public function create(ZohoContact $contact, Carbon $due_date, ZohoProduct $product = null, array $data)
+    public function create(ZohoContact $contact, Carbon $due_date, ZohoProduct $product = null, array $data): ZohoTicket
     {
         $ticket = ZohoDesk::post('/tickets', array_merge([
             'departmentId' => config('zohodesk.department_id'),
@@ -32,6 +32,6 @@ class ZohoTicket
             'productId' => ($product) ? $product->id : null,
         ], $data));
 
-        dd($ticket);
+        return ZohoTicket::make($ticket);
     }
 }
