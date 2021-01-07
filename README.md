@@ -1,6 +1,6 @@
 ![alt text](https://marshmallow.dev/cdn/media/logo-red-237x46.png "marshmallow.")
 
-# Laravel Nova Pages
+# Laravel Zoho Desk
 [![Version](https://img.shields.io/packagist/v/marshmallow/pages)](https://github.com/marshmallow-packages/pages)
 [![Issues](https://img.shields.io/github/issues/marshmallow-packages/pages)](https://github.com/marshmallow-packages/pages)
 [![Licence](https://img.shields.io/github/license/marshmallow-packages/pages)](https://github.com/marshmallow-packages/pages)
