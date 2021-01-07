@@ -2,10 +2,9 @@
 
 namespace Marshmallow\ZohoDesk\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
-use Marshmallow\ZohoDesk\Models\ZohoToken;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ZohoToken extends Model
 {

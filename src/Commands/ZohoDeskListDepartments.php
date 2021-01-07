@@ -3,7 +3,7 @@
 namespace Marshmallow\ZohoDesk\Commands;
 
 use Illuminate\Console\Command;
-use Marshmallow\ZohoDesk\Classes\ZohoDepartment;
+use Marshmallow\ZohoDesk\Facades\Department;
 
 class ZohoDeskListDepartments extends Command
 {
@@ -28,7 +28,7 @@ class ZohoDeskListDepartments extends Command
      */
     public function handle()
     {
-        $departments = ZohoDepartment::list()->map(function ($item) {
+        $departments = Department::list()->map(function ($item) {
             return [
                 $item['id'],
                 $item['name'],

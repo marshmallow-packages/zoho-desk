@@ -2,16 +2,16 @@
 
 namespace Marshmallow\ZohoDesk\Traits;
 
+use Marshmallow\ZohoDesk\Facades\Contact;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
-use Marshmallow\ZohoDesk\Classes\ZohoTicket;
-use Marshmallow\ZohoDesk\Classes\ZohoContact;
+use Marshmallow\ZohoDesk\Resources\ZohoTicket;
 
 trait ZohoLead
 {
     public function addToZoho()
     {
         if (!$this->zoho_contact_id) {
-            $contact_exists = ZohoContact::search([
+            $contact_exists = Contact::search([
                 'email' => $this->email,
             ]);
 
@@ -20,7 +20,7 @@ trait ZohoLead
                     $contact_exists->first()
                 );
             } else {
-                $contact = ZohoContact::create([
+                $contact = Contact::create([
                     'lastName' => $this->last_name,
                     'firstName' => $this->first_name,
                     'email' => $this->email,

@@ -26,14 +26,14 @@ class ZohoDeskAuth extends Command
         $client_secret = $this->ask('Please enter your client secret?', config('zohodesk.client_secret'));
 
         $this->info("Step 1: Go to https://api-console.zoho.eu/client/$client_id");
-        $this->line("Step 2: Enter the scope information as listed below in the scopes field");
-        $this->line("Step 3: Set the time duration to 3 minutes");
-        $this->line("Step 4: Add a random description to the discription field");
-        $this->line("Step 5: Press create");
-        $this->line("Step 5: Copy the generated code in this terminal");
+        $this->line('Step 2: Enter the scope information as listed below in the scopes field');
+        $this->line('Step 3: Set the time duration to 3 minutes');
+        $this->line('Step 4: Add a random description to the discription field');
+        $this->line('Step 5: Press create');
+        $this->line('Step 5: Copy the generated code in this terminal');
 
         $this->newLine();
-        $this->line("Your scopes to add to the Zoho api console:");
+        $this->line('Your scopes to add to the Zoho api console:');
         $this->line(join(',', config('zohodesk.scopes')));
         $this->newLine();
         $code = $this->ask('Please enter the temporary code?');
@@ -46,10 +46,12 @@ class ZohoDeskAuth extends Command
             ]);
         } catch (Exception $e) {
             $this->error($e->getMessage());
+
             return 0;
         }
 
         $this->info('Auth was successfull!');
+
         return 0;
     }
 }

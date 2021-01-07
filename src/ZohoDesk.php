@@ -2,8 +2,8 @@
 
 namespace Marshmallow\ZohoDesk;
 
-use Exception;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Marshmallow\ZohoDesk\Models\ZohoToken;
@@ -119,16 +119,25 @@ class ZohoDesk
     {
         $config = [
             'refresh_token' => $token->refresh_token,
-            'client_id' => config('zoho.client_id'),
-            'client_secret' => config('zoho.client_secret'),
-            'scope' => join(',', config('zoho.scopes')),
+            'client_id' => config('zohodesk.client_id'),
+            'client_secret' => config('zohodesk.client_secret'),
+            'scope' => join(',', config('zohodesk.scopes')),
             // 'redirect_uri' => 'XXXXXXXX',
             'grant_type' => 'refresh_token',
         ];
 
         $response = Http::post(config('zohodesk.auth_host').'/token?'.http_build_query($config));
+
+        if (array_key_exists('error', $response->json())) {
+            throw new Exception($response->json()['error']);
+        }
+
         $token->update(
-            $response->json()
+            collect($response->json())
+                ->only([
+                    'access_token', 'api_domain', 'token_type', 'expires_in',
+                ])
+                ->toArray()
         );
 
         return $token;

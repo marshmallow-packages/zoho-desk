@@ -2,7 +2,7 @@
 
 namespace Marshmallow\ZohoDesk\Traits;
 
-use Marshmallow\ZohoDesk\Classes\ZohoContact as ZohoContactApi;
+use Marshmallow\ZohoDesk\Facades\Contact;
 
 trait ZohoContact
 {
@@ -22,14 +22,14 @@ trait ZohoContact
 
     public function createZoho()
     {
-        return ZohoContactApi::create(
+        return Contact::create(
             $this->getZohoContactDataArray()
         );
     }
 
     protected function updateZoho()
     {
-        ZohoContactApi::update($this->zoho_contact_id, $this->getZohoContactDataArray());
+        Contact::update($this->zoho_contact_id, $this->getZohoContactDataArray());
     }
 
     protected function shouldUpdateZoho()

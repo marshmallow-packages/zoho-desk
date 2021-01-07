@@ -28,7 +28,12 @@ ZOHO_DEPARTMENT_ID=
 You need to run a migration so we can create a database table where we can store the access tokens for the connection to Zoho Desk.
 ```bash
 php artisan migrate
+```
 
+### Publish config
+Publish the config file and make adjustments where changes are needed for your situation.
+```bash
+php artisan vendor:publish --provider="Marshmallow\ZohoDesk\ZohoDeskServiceProvider"
 ```
 
 ### Auth
