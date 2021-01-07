@@ -1,10 +1,10 @@
 ![alt text](https://marshmallow.dev/cdn/media/logo-red-237x46.png "marshmallow.")
 
 # Laravel Zoho Desk
-[![Version](https://img.shields.io/packagist/v/marshmallow/pages)](https://github.com/marshmallow-packages/pages)
-[![Issues](https://img.shields.io/github/issues/marshmallow-packages/pages)](https://github.com/marshmallow-packages/pages)
-[![Licence](https://img.shields.io/github/license/marshmallow-packages/pages)](https://github.com/marshmallow-packages/pages)
-![PHP Syntax Checker](https://github.com/marshmallow-packages/pages/workflows/PHP%20Syntax%20Checker/badge.svg)
+[![Version](https://img.shields.io/packagist/v/marshmallow/zoho-desk)](https://github.com/marshmallow-packages/pages)
+[![Issues](https://img.shields.io/github/issues/marshmallow-packages/zoho-desk)](https://github.com/marshmallow-packages/pages)
+[![Licence](https://img.shields.io/github/license/marshmallow-packages/zoho-desk)](https://github.com/marshmallow-packages/pages)
+![PHP Syntax Checker](https://github.com/marshmallow-packages/zoho-desk/workflows/PHP%20Syntax%20Checker/badge.svg)
 
 This packages provides you with the ability to easily connect your Laravel application to ZohoDesk.
 
