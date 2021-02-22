@@ -142,4 +142,14 @@ class ZohoDesk
 
         return $token;
     }
+
+    public function active()
+    {
+        return config('zohodesk.active');
+    }
+
+    public function notActive()
+    {
+        return (! $this->active());
+    }
 }
