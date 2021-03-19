@@ -10,8 +10,24 @@ use Marshmallow\ZohoDesk\Models\ZohoProduct;
 
 class ZohoTicket
 {
-    public function get()
+    public function get($ticket_id)
     {
+        return ZohoDesk::get("/tickets/{$ticket_id}");
+    }
+
+    public function setDueDate($ticket_id, Carbon $due_date)
+    {
+        return ZohoDesk::patch("/tickets/{$ticket_id}", [
+            'dueDate' => ZohoDesk::dateFormat($due_date),
+        ]);
+    }
+
+    public function comment($ticket_id, $comment, $is_public = false)
+    {
+        return ZohoDesk::post("/tickets/{$ticket_id}/comments", [
+            'isPublic' => $is_public,
+            'content' => $comment,
+        ]);
     }
 
     public function list()

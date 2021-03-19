@@ -12,7 +12,7 @@ class ZohoDesk
 {
     public $access_token;
 
-    public function get(string $endpoint): Collection
+    public function get(string $endpoint)
     {
         try {
             $desk = new self();
@@ -23,6 +23,9 @@ class ZohoDesk
             if ($response->successful()) {
                 if (isset($response->json()['data'])) {
                     return collect($response->json()['data']);
+                }
+                if (!empty($response->json())) {
+                    return (object) $response->json();
                 }
                 if (!$response->json()) {
                     return collect([]);
