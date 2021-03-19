@@ -48,6 +48,12 @@ You can list you Departments if you don't know which department ID you need to u
 php artisan zoho-desk:list-departments
 ```
 
+#### Ticket
+```
+Ticket::setDueDate($ticket_id, now());
+Ticket::comment($ticket_id, 'This comment should be added to this ticket', $public = false);
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
