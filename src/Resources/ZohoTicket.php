@@ -2,11 +2,13 @@
 
 namespace Marshmallow\ZohoDesk\Resources;
 
+use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
-use Marshmallow\ZohoDesk\Models\ZohoTicket as ZohoTicketModel;
 use Marshmallow\ZohoDesk\Models\ZohoContact;
 use Marshmallow\ZohoDesk\Models\ZohoProduct;
+use Marshmallow\ZohoDesk\Models\ZohoTicket as ZohoTicketModel;
 
 class ZohoTicket
 {
@@ -28,6 +30,16 @@ class ZohoTicket
             'isPublic' => $is_public,
             'content' => $comment,
         ]);
+    }
+
+    public function attachment($ticket_id, string $relative_path, string $field_name = 'file')
+    {
+        $absolute_path = storage_path("app/$relative_path");
+        if (!file_exists($absolute_path)) {
+            throw new Exception("The attachment file does not exist ({$absolute_path})");
+        }
+
+        return ZohoDesk::attach($relative_path, $field_name)->post("/tickets/{$ticket_id}/attachments");
     }
 
     public function list()

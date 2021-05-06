@@ -2,8 +2,8 @@
 
 namespace Marshmallow\ZohoDesk;
 
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Marshmallow\ZohoDesk\Models\ZohoToken;
@@ -12,13 +12,15 @@ class ZohoDesk
 {
     public $access_token;
 
+    protected $attachment = [];
+
     public function get(string $endpoint)
     {
         try {
             $desk = new self();
             $response = Http::withToken(
                 $desk->getAccessToken()
-            )->get(config('zohodesk.desk_host').$endpoint);
+            )->get(config('zohodesk.desk_host') . $endpoint);
 
             if ($response->successful()) {
                 if (isset($response->json()['data'])) {
@@ -33,26 +35,45 @@ class ZohoDesk
             }
 
             $error = $response->json();
-            throw new Exception($error['errorCode'].': '.$error['message']);
+            throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
             dd($e->getMessage());
         }
     }
 
-    public function post(string $endpoint, array $data): array
+    public function attach(string $relative_path, string $field_name = 'file')
+    {
+        $this->attachment[] = [
+            $field_name => $relative_path,
+        ];
+        return $this;
+    }
+
+    public function post(string $endpoint, array $data = []): array
     {
         try {
             $desk = new self();
-            $response = Http::withToken(
+            $client = Http::withToken(
                 $desk->getAccessToken()
-            )->post(config('zohodesk.desk_host').$endpoint, $data);
+            );
+
+            if (!empty($this->attachment)) {
+                foreach ($this->attachment as $attachment) {
+                    foreach ($attachment as $field_name => $relative_path) {
+                        $photo = fopen(storage_path("app/{$relative_path}"), 'r');
+                        $client->attach($field_name, $photo, $relative_path);
+                    }
+                }
+            }
+
+            $response = $client->post(config('zohodesk.desk_host') . $endpoint, $data);
 
             if ($response->successful()) {
                 return $response->json();
             }
 
             $error = $response->json();
-            throw new Exception($error['errorCode'].': '.$error['message']);
+            throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
             dd($e->getMessage());
         }
@@ -64,14 +85,14 @@ class ZohoDesk
             $desk = new self();
             $response = Http::withToken(
                 $desk->getAccessToken()
-            )->patch(config('zohodesk.desk_host').$endpoint, $data);
+            )->patch(config('zohodesk.desk_host') . $endpoint, $data);
 
             if ($response->successful()) {
                 return $response->json();
             }
 
             $error = $response->json();
-            throw new Exception($error['errorCode'].': '.$error['message']);
+            throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
             dd($e->getMessage());
         }
@@ -103,7 +124,7 @@ class ZohoDesk
             'grant_type' => 'authorization_code',
         ], $config);
 
-        $response = Http::post(config('zohodesk.auth_host').'/token?'.http_build_query($config));
+        $response = Http::post(config('zohodesk.auth_host') . '/token?' . http_build_query($config));
 
         if (array_key_exists('error', $response->json())) {
             throw new Exception($response->json()['error']);
@@ -129,7 +150,7 @@ class ZohoDesk
             'grant_type' => 'refresh_token',
         ];
 
-        $response = Http::post(config('zohodesk.auth_host').'/token?'.http_build_query($config));
+        $response = Http::post(config('zohodesk.auth_host') . '/token?' . http_build_query($config));
 
         if (array_key_exists('error', $response->json())) {
             throw new Exception($response->json()['error']);
@@ -153,6 +174,6 @@ class ZohoDesk
 
     public function notActive()
     {
-        return (! $this->active());
+        return (!$this->active());
     }
 }
