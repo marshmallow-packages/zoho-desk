@@ -60,7 +60,7 @@ class ZohoDesk
             if (!empty($this->attachment)) {
                 foreach ($this->attachment as $attachment) {
                     foreach ($attachment as $field_name => $relative_path) {
-                        $photo = fopen(storage_path("app/{$relative_path}"), 'r');
+                        $photo = fopen(storage_path("{$relative_path}"), 'r');
                         $client->attach($field_name, $photo, $relative_path);
                     }
                 }
