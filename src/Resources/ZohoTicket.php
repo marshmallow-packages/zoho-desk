@@ -34,7 +34,7 @@ class ZohoTicket
 
     public function attachment($ticket_id, string $relative_path, string $field_name = 'file')
     {
-        $absolute_path = storage_path("app/$relative_path");
+        $absolute_path = storage_path(ltrim($relative_path, '/'));
         if (!file_exists($absolute_path)) {
             throw new Exception("The attachment file does not exist ({$absolute_path})");
         }
