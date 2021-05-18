@@ -15,7 +15,18 @@ class ZohoProduct
     {
         $product_exists = $this->findOneByName($name);
         if ($product_exists) {
-            return $product_exists;
+            if (in_array(config('zohodesk.department_id'), $product_exists->departmentIds)) {
+                return $product_exists;
+            }
+            $departmentIds = array_merge($product_exists->departmentIds, [
+                config('zohodesk.department_id')
+            ]);
+
+            ZohoDesk::patch("/products/{$product_exists->id}", [
+                'departmentIds' => $departmentIds,
+            ]);
+
+            return $this->findOneByName($name);
         }
 
         /*
