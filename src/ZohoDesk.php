@@ -4,15 +4,13 @@ namespace Marshmallow\ZohoDesk;
 
 use Exception;
 use Carbon\Carbon;
-use App\Exceptions\ZohoException;
-use Illuminate\Support\Collection;
-use App\Exceptions\ZohoGetException;
 use Illuminate\Support\Facades\Http;
-use App\Exceptions\ZohoAuthException;
-use App\Exceptions\ZohoPathException;
-use App\Exceptions\ZohoPostException;
 use Marshmallow\ZohoDesk\Models\ZohoToken;
-use App\Exceptions\ZohoRefreshAccessTokenException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoGetException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoAuthException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoPathException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoPostException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoRefreshAccessTokenException;
 
 class ZohoDesk
 {

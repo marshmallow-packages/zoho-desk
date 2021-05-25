@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
 use Marshmallow\ZohoDesk\Models\ZohoContact;
 use Marshmallow\ZohoDesk\Models\ZohoProduct;
-use App\Exceptions\ZohoAttachmentDoesntExist;
+use Marshmallow\ZohoDesk\Exceptions\ZohoAttachmentDoesntExist;
 use Marshmallow\ZohoDesk\Models\ZohoTicket as ZohoTicketModel;
 
 class ZohoTicket
