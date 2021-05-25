@@ -52,63 +52,11 @@ class ZohoContact
 
     public function search(array $data)
     {
-        return ZohoDesk::get('/contacts/search?'.http_build_query($data));
+        return ZohoDesk::get('/contacts/search?' . http_build_query($data));
     }
 
     public function update(int $contact_id, array $data)
     {
         return ZohoDesk::patch("/v1/contacts/$contact_id", $data);
-    }
-
-    public function profiles()
-    {
-    }
-
-    public function listByIds()
-    {
-    }
-
-    public function tickets()
-    {
-    }
-
-    public function products()
-    {
-    }
-
-    public function count()
-    {
-    }
-
-    public function statistics()
-    {
-    }
-
-    public function merge()
-    {
-    }
-
-    public function markAsSpam()
-    {
-    }
-
-    public function associateProducts()
-    {
-    }
-
-    public function history()
-    {
-    }
-
-    public function inviteAsEndUser()
-    {
-    }
-
-    public function inviteMultipleAsEndUser()
-    {
-    }
-
-    public function helpCenters()
-    {
     }
 }

@@ -4,12 +4,14 @@ namespace Marshmallow\ZohoDesk;
 
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Marshmallow\ZohoDesk\Models\ZohoToken;
 use Marshmallow\ZohoDesk\Exceptions\ZohoGetException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoAuthException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoPathException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoPostException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoBadRequestException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoRefreshAccessTokenException;
 
 class ZohoDesk
@@ -79,6 +81,9 @@ class ZohoDesk
             $error = $response->json();
             throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
+            if (Str::contains($error['message'], 'BAD_REQUEST')) {
+                throw new ZohoBadRequestException($error['message'], $e->getCode());
+            }
             throw new ZohoPostException($e->getMessage(), $e->getCode());
         }
     }
