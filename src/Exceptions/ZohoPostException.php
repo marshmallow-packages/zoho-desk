@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Marshmallow\ZohoDesk\Exceptions;
 
 class ZohoPostException extends ZohoException
 {
