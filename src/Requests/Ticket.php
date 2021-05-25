@@ -3,7 +3,9 @@
 namespace Marshmallow\ZohoDesk\Requests;
 
 use Carbon\Carbon;
+use Marshmallow\ZohoDesk\Facades\Requests\Contact;
 use Marshmallow\ZohoDesk\Facades\Ticket as TicketFacade;
+use Marshmallow\ZohoDesk\Exceptions\ZohoTicketDoesntExistException;
 
 class Ticket
 {
@@ -61,5 +63,18 @@ class Ticket
                 TicketFacade::attachment($this->ticket_id, $attachment['relative_path'], $attachment['field_name']);
             }
         }
+    }
+
+    public function getLatestTicketFromSameContact(): ?object
+    {
+        $current_ticket = TicketFacade::get($this->ticket_id);
+        if (!$current_ticket) {
+            throw new ZohoTicketDoesntExistException("Ticket with ID {$this->ticket_id} doesnt exist.");
+        }
+        $tickets = Contact::of($current_ticket->contactId)->tickets();
+        if (!$tickets->count()) {
+            return null;
+        }
+        return (object) $tickets->sortByDesc('createdTime')->first();
     }
 }

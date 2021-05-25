@@ -19,6 +19,10 @@ You can install the package via composer:
 composer require marshmallow/zoho-desk
 ```
 
+### Documentation
+
+The documentation for the Zoho Desk api can be found [here](https://desk.zoho.com/DeskAPIDocument):
+
 ### Configuration
 
 You need to fill in you `ZOHO_CLIENT_ID` and `ZOHO_CLIENT_SECRET` to be able to run the next step of the installation. If you know your `ZOHO_DEPARTMENT_ID` you can fill that in. If you don't, we have a command for you where u can list you departments and then fill it in. This can be run after you've run the auth command.
