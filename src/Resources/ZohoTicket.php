@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
 use Marshmallow\ZohoDesk\Models\ZohoContact;
 use Marshmallow\ZohoDesk\Models\ZohoProduct;
+use App\Exceptions\ZohoAttachmentDoesntExist;
 use Marshmallow\ZohoDesk\Models\ZohoTicket as ZohoTicketModel;
 
 class ZohoTicket
@@ -36,7 +37,7 @@ class ZohoTicket
     {
         $absolute_path = storage_path(ltrim($relative_path, '/'));
         if (!file_exists($absolute_path)) {
-            throw new Exception("The attachment file does not exist ({$absolute_path})");
+            throw new ZohoAttachmentDoesntExist("The attachment file does not exist ({$absolute_path})");
         }
 
         return ZohoDesk::attach($relative_path, $field_name)->post("/tickets/{$ticket_id}/attachments");
