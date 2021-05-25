@@ -36,7 +36,7 @@ trait ZohoLead
 
         if (!$this->zoho_ticket_id) {
             $ticket = ZohoTicket::create([
-                'subject' => 'Website lead #'.$this->id,
+                'subject' => 'Website lead #' . $this->id,
                 'departmentId' => config('zoho.department_id'),
                 'contactId' => $this->zoho_contact_id,
                 'email' => $this->email,
@@ -44,7 +44,7 @@ trait ZohoLead
                 'dueDate' => ZohoDesk::dateFormat($this->created_at->addMinutes(10)),
                 'description' => $this->comment,
                 'cf' => [
-                    'cf_link_to_cms' => config('app.url').'/marshmallow/resources/leads/'.$this->id,
+                    'cf_link_to_cms' => config('app.url') . '/marshmallow/resources/leads/' . $this->id,
                 ],
                 'channel' => 'Web',
                 'classification' => 'Request', // Problem, Request, Question, and Others.

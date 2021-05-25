@@ -4,9 +4,15 @@ namespace Marshmallow\ZohoDesk;
 
 use Exception;
 use Carbon\Carbon;
+use App\Exceptions\ZohoException;
 use Illuminate\Support\Collection;
+use App\Exceptions\ZohoGetException;
 use Illuminate\Support\Facades\Http;
+use App\Exceptions\ZohoAuthException;
+use App\Exceptions\ZohoPathException;
+use App\Exceptions\ZohoPostException;
 use Marshmallow\ZohoDesk\Models\ZohoToken;
+use App\Exceptions\ZohoRefreshAccessTokenException;
 
 class ZohoDesk
 {
@@ -37,7 +43,7 @@ class ZohoDesk
             $error = $response->json();
             throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            throw new ZohoGetException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -75,7 +81,7 @@ class ZohoDesk
             $error = $response->json();
             throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            throw new ZohoPostException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -94,7 +100,7 @@ class ZohoDesk
             $error = $response->json();
             throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            throw new ZohoPathException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -115,11 +121,6 @@ class ZohoDesk
 
     public function auth(array $config): self
     {
-        $client_id = $config['client_id'];
-        $client_secret = $config['client_secret'];
-        $code = $config['code'];
-        $redirect_uri = 'XXXXXXXX';
-
         $config = array_merge([
             'grant_type' => 'authorization_code',
         ], $config);
@@ -127,7 +128,7 @@ class ZohoDesk
         $response = Http::post(config('zohodesk.auth_host') . '/token?' . http_build_query($config));
 
         if (array_key_exists('error', $response->json())) {
-            throw new Exception($response->json()['error']);
+            throw new ZohoAuthException($response->json()['error'], 1);
         }
 
         if ($token = ZohoToken::first()) {
@@ -153,7 +154,7 @@ class ZohoDesk
         $response = Http::post(config('zohodesk.auth_host') . '/token?' . http_build_query($config));
 
         if (array_key_exists('error', $response->json())) {
-            throw new Exception($response->json()['error']);
+            throw new ZohoRefreshAccessTokenException($response->json()['error'], 1);
         }
 
         $token->update(
