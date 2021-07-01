@@ -82,7 +82,8 @@ class ZohoDesk
             throw new Exception($error['errorCode'] . ': ' . $error['message']);
         } catch (Exception $e) {
             if (Str::contains($e->getMessage(), 'BAD_REQUEST')) {
-                throw new ZohoBadRequestException($e->getMessage(), $e->getCode());
+                $message = $e->getMessage() . ' - ' . $endpoint . ' - ' . json_encode($data);
+                throw new ZohoBadRequestException($message, $e->getCode());
             }
             throw new ZohoPostException($e->getMessage(), $e->getCode());
         }
