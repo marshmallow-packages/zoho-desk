@@ -20,6 +20,8 @@ class ZohoDesk
 
     protected $attachment = [];
 
+    public static $zohoTokenModel = \Marshmallow\ZohoDesk\Models\ZohoToken::class;
+
     public function get(string $endpoint)
     {
         try {
@@ -110,7 +112,7 @@ class ZohoDesk
 
     protected function getAccessToken()
     {
-        $token = ZohoToken::firstOrFail();
+        $token = self::$zohoTokenModel::firstOrFail();
         if ($token->isExpired()) {
             $token->refresh();
         }
@@ -135,11 +137,11 @@ class ZohoDesk
             throw new ZohoAuthException($response->json()['error'], 1);
         }
 
-        if ($token = ZohoToken::first()) {
+        if ($token = self::$zohoTokenModel::first()) {
             $token->delete();
         }
 
-        ZohoToken::create($response->json());
+        self::$zohoTokenModel::create($response->json());
 
         return new self();
     }
