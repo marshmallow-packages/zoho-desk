@@ -22,13 +22,25 @@ class ZohoDesk
 
     public static $zohoTokenModel = \Marshmallow\ZohoDesk\Models\ZohoToken::class;
 
-    public function get(string $endpoint)
+    public function getHost($application)
     {
+
+        $host = config('zohodesk.desk_host');
+        if ($application == 'portal') {
+            $host = config('zohodesk.desk_portal_host');
+        }
+        return $host;
+    }
+
+    public function get(string $endpoint, $application = 'default')
+    {
+        $host = $this->getHost($application);
         try {
+
             $desk = new self();
             $response = Http::withToken(
                 $desk->getAccessToken()
-            )->get(config('zohodesk.desk_host') . $endpoint);
+            )->get($host . $endpoint);
 
             if ($response->successful()) {
                 if (isset($response->json()['data'])) {
@@ -57,8 +69,10 @@ class ZohoDesk
         return $this;
     }
 
-    public function post(string $endpoint, array $data = []): array
+    public function post(string $endpoint, array $data = [], $application = 'default'): array
     {
+        $host = $this->getHost($application);
+
         try {
             $desk = new self();
             $client = Http::withToken(
@@ -74,7 +88,7 @@ class ZohoDesk
                 }
             }
 
-            $response = $client->post(config('zohodesk.desk_host') . $endpoint, $data);
+            $response = $client->post($host . $endpoint, $data);
 
             if ($response->successful()) {
                 return $response->json();
@@ -91,13 +105,15 @@ class ZohoDesk
         }
     }
 
-    public function patch(string $endpoint, array $data): array
+    public function patch(string $endpoint, array $data, $application = 'default'): array
     {
+        $host = $this->getHost($application);
+
         try {
             $desk = new self();
             $response = Http::withToken(
                 $desk->getAccessToken()
-            )->patch(config('zohodesk.desk_host') . $endpoint, $data);
+            )->patch($host . $endpoint, $data);
 
             if ($response->successful()) {
                 return $response->json();
