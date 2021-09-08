@@ -70,13 +70,13 @@ php artisan zoho-desk:list-departments
 ```php
 Ticket::setDueDate($ticket_id, now());
 Ticket::comment($ticket_id, 'This comment should be added to this ticket', $public = false);
-Ticket::attachment($ticket_id, $relative_path);
+Ticket::attachment($ticket_id, $relative_storage_path);
 
 // Or bind them all together
 Ticket::of($ticket_id)
     ->setDueDate(now())
     ->comment('This comment should be added to this ticket', $public = false)
-    ->attachment($relative_path);
+    ->attachment($relative_storage_path);
 ```
 
 ## Changelog
