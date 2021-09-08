@@ -2,14 +2,11 @@
 
 namespace Marshmallow\ZohoDesk\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Marshmallow\ZohoDesk\Facades\ZohoDesk;
 
 class ZohoToken extends Model
 {
-    use HasFactory;
-
     protected $guarded = [];
 
     protected static function boot(): void
