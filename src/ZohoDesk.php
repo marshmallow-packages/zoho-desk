@@ -20,6 +20,8 @@ class ZohoDesk
 
     protected $attachment = [];
 
+    protected $host = 'desk_host';
+
     public static $zohoTokenModel = \Marshmallow\ZohoDesk\Models\ZohoToken::class;
 
     public function get(string $endpoint)
@@ -28,7 +30,7 @@ class ZohoDesk
             $desk = new self();
             $response = Http::withToken(
                 $desk->getAccessToken()
-            )->get(config('zohodesk.desk_host') . $endpoint);
+            )->get($this->buildApiPath($endpoint));
 
             if ($response->successful()) {
                 if (isset($response->json()['data'])) {
@@ -74,7 +76,7 @@ class ZohoDesk
                 }
             }
 
-            $response = $client->post(config('zohodesk.desk_host') . $endpoint, $data);
+            $response = $client->post($this->buildApiPath($endpoint), $data);
 
             if ($response->successful()) {
                 return $response->json();
@@ -97,7 +99,7 @@ class ZohoDesk
             $desk = new self();
             $response = Http::withToken(
                 $desk->getAccessToken()
-            )->patch(config('zohodesk.desk_host') . $endpoint, $data);
+            )->patch($this->buildApiPath($endpoint), $data);
 
             if ($response->successful()) {
                 return $response->json();
@@ -108,6 +110,18 @@ class ZohoDesk
         } catch (Exception $e) {
             throw new ZohoPathException($e->getMessage(), $e->getCode());
         }
+    }
+
+    protected function buildApiPath(string $endpoint): string
+    {
+        $host = config("zohodesk.{$this->host}");
+        return $host . $endpoint;
+    }
+
+    protected function portal(): self
+    {
+        $this->host = 'desk_portal_host';
+        return $this;
     }
 
     protected function getAccessToken()

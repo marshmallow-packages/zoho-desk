@@ -36,10 +36,10 @@ class Ticket
         return $this;
     }
 
-    public function attachment(string $relative_path, string $field_name = 'file')
+    public function attachment(string $relative_storage_path, string $field_name = 'file')
     {
         $this->attachment[] = [
-            'relative_path' => $relative_path,
+            'relative_path' => $relative_storage_path,
             'field_name' => $field_name,
         ];
 

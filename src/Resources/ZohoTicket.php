@@ -33,14 +33,14 @@ class ZohoTicket
         ]);
     }
 
-    public function attachment($ticket_id, string $relative_path, string $field_name = 'file')
+    public function attachment($ticket_id, string $relative_storage_path, string $field_name = 'file')
     {
-        $absolute_path = storage_path(ltrim($relative_path, '/'));
+        $absolute_path = storage_path(ltrim($relative_storage_path, '/'));
         if (!file_exists($absolute_path)) {
             throw new ZohoAttachmentDoesntExist("The attachment file does not exist ({$absolute_path})");
         }
 
-        return ZohoDesk::attach($relative_path, $field_name)->post("/tickets/{$ticket_id}/attachments");
+        return ZohoDesk::attach($relative_storage_path, $field_name)->post("/tickets/{$ticket_id}/attachments");
     }
 
     public function list()
