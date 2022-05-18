@@ -13,6 +13,8 @@ return [
 
     'desk_host' => env('ZOHO_DESK_HOST', 'https://desk.zoho.eu/api/v1'),
 
+    'desk_portal_host' => env('ZOHO_DESK_PORTAL_HOST', 'https://desk.zoho.eu/portal/api'),
+
     'default_channel' => 'Web',
 
     'default_classification' => 'Request',
