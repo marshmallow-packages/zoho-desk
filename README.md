@@ -79,6 +79,14 @@ Ticket::of($ticket_id)
     ->attachment($relative_storage_path);
 ```
 
+## Applications
+
+We are preparing to implement more Zoho applications than just Zoho Desk. We are starting with Zoho Portal. This can be activated by calling the `portal()` method on the ZohoDesk facade.
+
+```php
+ZohoDesk::portal()->get('kbArticles/{articles_id});
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
