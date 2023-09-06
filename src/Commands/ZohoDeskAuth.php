@@ -32,10 +32,10 @@ class ZohoDeskAuth extends Command
         $this->line('Step 5: Press create');
         $this->line('Step 5: Copy the generated code in this terminal');
 
-        $this->newLine();
+        $this->line('');
         $this->line('Your scopes to add to the Zoho api console:');
         $this->line(join(',', config('zohodesk.scopes')));
-        $this->newLine();
+        $this->line('');
         $code = $this->ask('Please enter the temporary code?');
 
         try {
