@@ -2,17 +2,17 @@
 
 namespace Marshmallow\ZohoDesk;
 
-use Exception;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use Exception;
 use Illuminate\Support\Facades\Http;
-use Marshmallow\ZohoDesk\Models\ZohoToken;
-use Marshmallow\ZohoDesk\Exceptions\ZohoGetException;
+use Illuminate\Support\Str;
 use Marshmallow\ZohoDesk\Exceptions\ZohoAuthException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoBadRequestException;
+use Marshmallow\ZohoDesk\Exceptions\ZohoGetException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoPathException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoPostException;
-use Marshmallow\ZohoDesk\Exceptions\ZohoBadRequestException;
 use Marshmallow\ZohoDesk\Exceptions\ZohoRefreshAccessTokenException;
+use Marshmallow\ZohoDesk\Models\ZohoToken;
 
 class ZohoDesk
 {
@@ -22,12 +22,12 @@ class ZohoDesk
 
     protected $host = 'desk_host';
 
-    public static $zohoTokenModel = \Marshmallow\ZohoDesk\Models\ZohoToken::class;
+    public static $zohoTokenModel = ZohoToken::class;
 
     public function get(string $endpoint)
     {
         try {
-            $desk = new self();
+            $desk = new self;
             $response = Http::withToken(
                 $desk->getAccessToken()
             )->get($this->buildApiPath($endpoint));
@@ -36,16 +36,15 @@ class ZohoDesk
                 if (isset($response->json()['data'])) {
                     return collect($response->json()['data']);
                 }
-                if (!empty($response->json())) {
+                if (! empty($response->json())) {
                     return (object) $response->json();
                 }
-                if (!$response->json()) {
+                if (! $response->json()) {
                     return collect([]);
                 }
             }
 
-            $error = $response->json();
-            throw new Exception($error['errorCode'] . ': ' . $error['message']);
+            throw new Exception($this->formatError($response->json(), $endpoint));
         } catch (Exception $e) {
             throw new ZohoGetException($e->getMessage(), $e->getCode());
         }
@@ -56,18 +55,19 @@ class ZohoDesk
         $this->attachment[] = [
             $field_name => $relative_path,
         ];
+
         return $this;
     }
 
     public function post(string $endpoint, array $data = []): array
     {
         try {
-            $desk = new self();
+            $desk = new self;
             $client = Http::withToken(
                 $desk->getAccessToken()
             );
 
-            if (!empty($this->attachment)) {
+            if (! empty($this->attachment)) {
                 foreach ($this->attachment as $attachment) {
                     foreach ($attachment as $field_name => $relative_path) {
                         $photo = fopen(storage_path("{$relative_path}"), 'r');
@@ -82,12 +82,10 @@ class ZohoDesk
                 return $response->json();
             }
 
-            $error = $response->json();
-            throw new Exception($error['errorCode'] . ': ' . $error['message']);
+            throw new Exception($this->formatError($response->json(), $endpoint, $data));
         } catch (Exception $e) {
             if (Str::contains($e->getMessage(), 'BAD_REQUEST')) {
-                $message = $e->getMessage() . ' - ' . $endpoint . ' - ' . json_encode($data);
-                throw new ZohoBadRequestException($message, $e->getCode());
+                throw new ZohoBadRequestException($e->getMessage(), $e->getCode());
             }
             throw new ZohoPostException($e->getMessage(), $e->getCode());
         }
@@ -96,7 +94,7 @@ class ZohoDesk
     public function patch(string $endpoint, array $data): array
     {
         try {
-            $desk = new self();
+            $desk = new self;
             $response = Http::withToken(
                 $desk->getAccessToken()
             )->patch($this->buildApiPath($endpoint), $data);
@@ -105,22 +103,51 @@ class ZohoDesk
                 return $response->json();
             }
 
-            $error = $response->json();
-            throw new Exception($error['errorCode'] . ': ' . $error['message']);
+            throw new Exception($this->formatError($response->json(), $endpoint, $data));
         } catch (Exception $e) {
             throw new ZohoPathException($e->getMessage(), $e->getCode());
         }
     }
 
+    /**
+     * Build a debuggable exception message from a failed Zoho response.
+     *
+     * Includes Zoho's `errors` array (which names the offending field on
+     * INVALID_DATA), the endpoint, and — for write requests — the payload.
+     *
+     * @param  array<string, mixed>|null  $error
+     * @param  array<string, mixed>|null  $data
+     */
+    protected function formatError(?array $error, string $endpoint, ?array $data = null): string
+    {
+        $error = $error ?? [];
+
+        $message = sprintf(
+            '%s: %s - %s - %s',
+            $error['errorCode'] ?? 'UNKNOWN',
+            $error['message'] ?? 'No message provided by Zoho',
+            json_encode($error['errors'] ?? []),
+            $endpoint
+        );
+
+        if ($data !== null) {
+            $message .= ' - '.json_encode($data);
+        }
+
+        return $message;
+    }
+
     protected function buildApiPath(string $endpoint): string
     {
         $host = config("zohodesk.{$this->host}");
-        return $host . $endpoint;
+
+        return $host.$endpoint;
     }
 
     protected function portal(): self
     {
         $this->host = 'desk_portal_host';
+
         return $this;
     }
 
@@ -145,7 +172,7 @@ class ZohoDesk
             'grant_type' => 'authorization_code',
         ], $config);
 
-        $response = Http::post(config('zohodesk.auth_host') . '/token?' . http_build_query($config));
+        $response = Http::post(config('zohodesk.auth_host').'/token?'.http_build_query($config));
 
         if (array_key_exists('error', $response->json())) {
             throw new ZohoAuthException($response->json()['error'], 1);
@@ -157,7 +184,7 @@ class ZohoDesk
 
         self::$zohoTokenModel::create($response->json());
 
-        return new self();
+        return new self;
     }
 
     public function refreshAccessToken(ZohoToken $token): ZohoToken
@@ -166,12 +193,12 @@ class ZohoDesk
             'refresh_token' => $token->refresh_token,
             'client_id' => config('zohodesk.client_id'),
             'client_secret' => config('zohodesk.client_secret'),
-            'scope' => join(',', config('zohodesk.scopes')),
+            'scope' => implode(',', config('zohodesk.scopes')),
             // 'redirect_uri' => 'XXXXXXXX',
             'grant_type' => 'refresh_token',
         ];
 
-        $response = Http::post(config('zohodesk.auth_host') . '/token?' . http_build_query($config));
+        $response = Http::post(config('zohodesk.auth_host').'/token?'.http_build_query($config));
 
         if (array_key_exists('error', $response->json())) {
             throw new ZohoRefreshAccessTokenException($response->json()['error'], 1);
@@ -195,6 +222,6 @@ class ZohoDesk
 
     public function notActive()
     {
-        return (!$this->active());
+        return ! $this->active();
     }
 }
