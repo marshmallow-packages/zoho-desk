@@ -44,8 +44,7 @@ class ZohoDesk
                 }
             }
 
-            $error = $response->json();
-            throw new Exception($error['errorCode'] . ': ' . $error['message']);
+            throw new Exception($this->formatError($response->json(), $endpoint));
         } catch (Exception $e) {
             throw new ZohoGetException($e->getMessage(), $e->getCode());
         }
@@ -82,12 +81,10 @@ class ZohoDesk
                 return $response->json();
             }
 
-            $error = $response->json();
-            throw new Exception($error['errorCode'] . ': ' . $error['message']);
+            throw new Exception($this->formatError($response->json(), $endpoint, $data));
         } catch (Exception $e) {
             if (Str::contains($e->getMessage(), 'BAD_REQUEST')) {
-                $message = $e->getMessage() . ' - ' . $endpoint . ' - ' . json_encode($data);
-                throw new ZohoBadRequestException($message, $e->getCode());
+                throw new ZohoBadRequestException($e->getMessage(), $e->getCode());
             }
             throw new ZohoPostException($e->getMessage(), $e->getCode());
         }
@@ -105,11 +102,38 @@ class ZohoDesk
                 return $response->json();
             }
 
-            $error = $response->json();
-            throw new Exception($error['errorCode'] . ': ' . $error['message']);
+            throw new Exception($this->formatError($response->json(), $endpoint, $data));
         } catch (Exception $e) {
             throw new ZohoPathException($e->getMessage(), $e->getCode());
         }
+    }
+
+    /**
+     * Build a debuggable exception message from a failed Zoho response.
+     *
+     * Includes Zoho's `errors` array (which names the offending field on
+     * INVALID_DATA), the endpoint, and — for write requests — the payload.
+     *
+     * @param  array<string, mixed>|null  $error
+     * @param  array<string, mixed>|null  $data
+     */
+    protected function formatError(?array $error, string $endpoint, ?array $data = null): string
+    {
+        $error = $error ?? [];
+
+        $message = sprintf(
+            '%s: %s - %s - %s',
+            $error['errorCode'] ?? 'UNKNOWN',
+            $error['message'] ?? 'No message provided by Zoho',
+            json_encode($error['errors'] ?? []),
+            $endpoint
+        );
+
+        if ($data !== null) {
+            $message .= ' - ' . json_encode($data);
+        }
+
+        return $message;
     }
 
     protected function buildApiPath(string $endpoint): string
